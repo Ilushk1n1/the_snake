@@ -1,3 +1,4 @@
+
 """Модуль с игрой Змейка."""
 
 from random import randint
@@ -102,7 +103,9 @@ class Snake(GameObject):
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+            pygame.draw.rect(
+                screen, BOARD_BACKGROUND_COLOR, last_rect
+            )
 
     def get_head_position(self):
         """Возвращает позицию головы."""
@@ -145,12 +148,15 @@ def main():
         handle_keys(snake)
         snake.update_direction()
         snake.move()
+
         if snake.get_head_position() == apple.position:
             snake.length += 1
             while apple.position in snake.positions:
                 apple.randomize_position()
+
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()
+
         screen.fill(BOARD_BACKGROUND_COLOR)
         apple.draw()
         snake.draw()
