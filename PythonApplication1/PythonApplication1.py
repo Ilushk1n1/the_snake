@@ -1,5 +1,5 @@
-
-from random import choice, randint
+import sys
+from random import randint
 
 import pygame
 
@@ -15,16 +15,10 @@ DOWN = (0, 1)
 LEFT = (-1, 0)
 RIGHT = (1, 0)
 
-# Цвет фона - черный:
+# Цвета:
 BOARD_BACKGROUND_COLOR = (0, 0, 0)
-
-# Цвет границы ячейки
 BORDER_COLOR = (93, 216, 228)
-
-# Цвет яблока
 APPLE_COLOR = (255, 0, 0)
-
-# Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
 
 # Скорость движения змейки:
@@ -32,20 +26,13 @@ SPEED = 20
 
 # Настройка игрового окна:
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-
-# Заголовок окна игрового поля:
 pygame.display.set_caption('Змейка')
-
-# Настройка времени:
 clock = pygame.time.Clock()
 
 
 class GameObject:
     def __init__(self):
-        self.position = (
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 2
-        )
+        self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.body_color = None
 
     def draw(self):
@@ -65,16 +52,12 @@ class Apple(GameObject):
         )
 
     def draw(self):
-        rect = pygame.Rect(
-            self.position,
-            (GRID_SIZE, GRID_SIZE)
-        )
+        rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
 
 class Snake(GameObject):
-
     def __init__(self):
         super().__init__()
         self.length = 1
@@ -93,14 +76,11 @@ class Snake(GameObject):
         head_x, head_y = self.get_head_position()
 
         new_head = (
-            (head_x + self.direction[0] * GRID_SIZE)
-            % SCREEN_WIDTH,
-            (head_y + self.direction[1] * GRID_SIZE)
-            % SCREEN_HEIGHT
+            (head_x + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH,
+            (head_y + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT
         )
 
         self.positions.insert(0, new_head)
-
         self.last = None
 
         if len(self.positions) > self.length:
@@ -110,32 +90,20 @@ class Snake(GameObject):
 
     def draw(self):
         for position in self.positions:
-            rect = pygame.Rect(
-                position,
-                (GRID_SIZE, GRID_SIZE)
-            )
+            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(screen, self.body_color, rect)
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
 
         if self.last:
-            last_rect = pygame.Rect(
-                self.last,
-                (GRID_SIZE, GRID_SIZE)
-            )
-            pygame.draw.rect(
-                screen,
-                BOARD_BACKGROUND_COLOR,
-                last_rect
-            )
+            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
 
     def get_head_position(self):
         return self.positions[0]
 
     def reset(self):
         self.length = 1
-        self.positions = [
-            (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        ]
+        self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.position = self.positions[0]
         self.direction = RIGHT
         self.next_direction = None
@@ -148,7 +116,7 @@ def handle_keys(game_object):
             pygame.quit()
             raise SystemExit
 
-        elif event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 game_object.next_direction = UP
             elif event.key == pygame.K_DOWN:
@@ -167,7 +135,6 @@ def main():
 
     while True:
         clock.tick(SPEED)
-
         handle_keys(snake)
 
         snake.update_direction()
@@ -175,7 +142,6 @@ def main():
 
         if snake.get_head_position() == apple.position:
             snake.length += 1
-
             while apple.position in snake.positions:
                 apple.randomize_position()
 
@@ -183,10 +149,8 @@ def main():
             snake.reset()
 
         screen.fill(BOARD_BACKGROUND_COLOR)
-
         apple.draw()
         snake.draw()
-
         pygame.display.update()
 
 
